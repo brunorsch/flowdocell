@@ -3,9 +3,11 @@ import { StyleSheet, Image, ToastAndroid, View, Text, Linking } from 'react-nati
 import { useRoute } from '@react-navigation/native'
 import { useApiRepository } from '../../../repository/api.repository'
 import { getEpisode, getEpisodeNameAndNumberByTitle } from '../../../routines/episodes'
-import texts from '../../../texts'
 import { Button, EntireScreenLoader, Title } from '../../components'
 import { ScrollView } from 'react-native-gesture-handler'
+import texts from '../../../texts'
+import FAIcon from 'react-native-vector-icons/FontAwesome5'
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 export function EpisodeDetailsScreen() {
 
@@ -35,20 +37,30 @@ export function EpisodeDetailsScreen() {
   }, [])
 
   const actions = [
-    { key: 'mp3', name: 'Baixar episódio (MP3)', onPress: () => openUrl(mp3) },
-    { key: 'youtube', name: 'YouTube', onPress: () => openYoutubeUrl(feed['youtube']) },
-    { key: 'spotify', name: 'Spotify', onPress: () => openUrl(feed['spotify']) },
-    { key: 'google', name: 'Google Podcast', onPress: () => openUrl(feed['google']) },
-    { key: 'apple', name: 'Apple Podcast', onPress: () => openUrl(feed['apple']) },
-    { key: 'deezer', name: 'Deezer', onPress: () => openUrl(feed['deezer']) },
-    { key: 'amazon', name: 'Amazon Music', onPress: () => openUrl(feed['amazon']) }
+    { key: 'mp3', name: 'Baixar episódio (MP3)', icon: 'download', iconComponent: MaterialIcon, onPress: () => openUrl(mp3) },
+    { key: 'youtube', name: 'YouTube', icon: 'youtube', onPress: () => openYoutubeUrl(feed['youtube']) },
+    { key: 'spotify', name: 'Spotify', icon: 'spotify', onPress: () => openUrl(feed['spotify']) },
+    { key: 'google', name: 'Google Podcast', icon: 'google-podcast', iconComponent: MaterialIcon, onPress: () => openUrl(feed['google']) },
+    { key: 'apple', name: 'Apple Podcast', icon: 'apple', onPress: () => openUrl(feed['apple']) },
+    { key: 'deezer', name: 'Deezer', icon: 'podcast', iconComponent: MaterialIcon, onPress: () => openUrl(feed['deezer']) },
+    { key: 'amazon', name: 'Amazon Music', icon: 'amazon', onPress: () => openUrl(feed['amazon']) }
   ]
 
-  const ActionButton = (btnProps) => <Button {...btnProps} textColor="#090909" style={styles.actionButton} textStyle={styles.actionButtonText} /> 
+  const ActionButton = (btnProps) => 
+      <Button {...btnProps} 
+        textColor="#090909" 
+        style={styles.actionButton} 
+        textStyle={styles.actionButtonText} 
+        childComponent={View} /> 
 
   const ActionButtons = () => actions
       .filter(({ key }) => !!feed[key] || key === 'mp3')
-      .map(({name, onPress}, index) => <ActionButton key={index} onPress={onPress}>{name}</ActionButton>)
+      .map(({name, onPress, icon, iconComponent: Icon = FAIcon}, index) => (
+        <ActionButton key={index} onPress={onPress}>
+          <Icon name={icon} size={20} style={styles.actionButtonIcon} /> 
+          <Text>{name}</Text>
+        </ActionButton>
+      ))
 
   if (hasError) return <View />
 
@@ -110,8 +122,14 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   actionButtonText: {
-    fontSize: 16,
-    textAlign: 'center'
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  actionButtonIcon: {
+    marginRight: 8,
   }
 })
 
