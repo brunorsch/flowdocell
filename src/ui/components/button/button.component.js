@@ -3,7 +3,7 @@ import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native'
 import constants from '../../../constants'
 
 export function Button(
-  { style, color, text, textColor, textStyle, children, onPress, onPressIn, onPressOut, onLongPress, loading, loaderSize, inverse, rounded }) {
+  { style, color, text, textColor, textStyle, children, onPress, onPressIn, onPressOut, onLongPress, loading, loaderSize, inverse, rounded, childComponent: ChildComponent }) {
 
   const specialColors = {
     primary: constants.FLOW_YELLOW,
@@ -40,7 +40,7 @@ export function Button(
       {loading ? (
         <ActivityIndicator color={textColor} animating size={loaderSize || 'small'} />
       ) : (
-        <Text style={styles.text}>{children || text}</Text>
+        <ChildComponent style={styles.text}>{children || text}</ChildComponent>
       )}
     </Pressable>
   )
@@ -52,5 +52,6 @@ Button.defaultProps = {
   color: 'primary',
   textColor: '#FFF',
   inverse: false,
-  rounded: true
+  rounded: true,
+  childComponent: Text,
 }
